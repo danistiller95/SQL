@@ -1,0 +1,36 @@
+--create a store database
+CREATE TABLE Homestead_Naturals (id INTEGER PRIMARY KEY, name TEXT, category TEXT, cost INTEGER, current_orders INTEGER);
+
+INSERT INTO Homestead_Naturals VALUES (1, "bath bomb", "bath", 3, 10);
+INSERT INTO Homestead_Naturals VALUES (2, "all purpose cleaner", "cleaning", 5, 4);
+INSERT INTO Homestead_Naturals VALUES (3, "laundry soap", "cleaning", 10, 6);
+INSERT INTO Homestead_Naturals VALUES (4, "essential oil", "general", 10, 10);
+INSERT INTO Homestead_Naturals VALUES (5, "shower steamer", "bath", 3, 12);
+INSERT INTO Homestead_Naturals VALUES (6, "laundry stick", "cleaning", 4, 7);
+INSERT INTO Homestead_Naturals VALUES (7, "chapstick", "general", 2, 1);
+INSERT INTO Homestead_Naturals VALUES (8, "toliet cleaner pods", "cleaning", 7, 20);
+INSERT INTO Homestead_Naturals VALUES (9, "dish soap", "cleaning", 5, 2);
+INSERT INTO Homestead_Naturals VALUES (10, "fruit and veggie wash", "cleaning", 4, 6);
+INSERT INTO Homestead_Naturals VALUES (11, "face wash", "general", 8, 8);
+INSERT INTO Homestead_Naturals VALUES (12, "moisturizer", "general", 8, 9);
+INSERT INTO Homestead_Naturals VALUES (13, "hand soap", "cleaning", 3, 10);
+INSERT INTO Homestead_Naturals VALUES (14, "shampoo bar", "general", 5, 5);
+INSERT INTO Homestead_Naturals VALUES (15, "deoderant", "general", 7, 3);
+
+--display the entire database
+SELECT * FROM Homestead_Naturals;
+
+--What is the total cost of each item?
+SELECT SUM(cost) FROM Homestead_Naturals;
+
+--How many current orders are there?
+SELECT SUM(current_orders) FROM Homestead_Naturals;
+
+--What item has the most current orders?
+SELECT name, MAX(current_orders) FROM Homestead_Naturals;
+
+--Which orders cost more than 5 dollars?
+SELECT * FROM Homestead_Naturals WHERE cost > 5 ORDER BY cost;
+
+--Which items cost more than 7 dollars and have over 5 current orders?
+SELECT * FROM Homestead_naturals WHERE cost >7 AND current_orders >5;
