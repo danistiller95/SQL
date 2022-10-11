@@ -1,0 +1,23 @@
+CREATE TABLE meditation (id INTEGER PRIMARY KEY, date TEXT, time_of_day TEXT, duration_minutes INTEGER, comments TEXT);
+
+INSERT INTO meditation VALUES (1, "01-01-2022", "Afternoon", 15, "It was harder to stay focused than I expected");
+INSERT INTO meditation VALUES (2, "01-02-2022", "Morning", 20, "My mind wanders a lot, but I know this will get easier");
+INSERT INTO meditation VALUES (3, "01-03-2022", "Morning", 15, "Running short on time this morning, but the meditation seemed to go better today");
+INSERT INTO meditation VALUES (4, "01-04-2022", "Evening", 30, "I really enjoyed meditating at night. I feel very relaxed and ready for bed");
+INSERT INTO meditation VALUES (5, "01-05-2022", "Evening", 35, "Night meditation seems to be easier for me. I will continue to meditate before bed");
+SELECT * FROM meditation;
+
+--Update the first mediation log's duration from 15 minutes to 10 minutes.
+UPDATE meditation SET duration_minutes = 10 WHERE id =1;
+SELECT * FROM meditation;
+
+--Deleted the 5th log in the table.
+DELETE FROM meditation WHERE id =5;
+SELECT * FROM meditation;
+
+--Create a new column in the table labeled "relaxation_rate". List "unrecorded" in this new colum for all previous entries. 
+ALTER TABLE meditation ADD relaxation_rate INTEGER default "unrecorded";
+
+--Create a new entry showcasing the new column. 
+INSERT INTO meditation VALUES (6, "01-06-2022", "Evening", 25, "I had a very stressful day and am feeling much better now that I meditated", 8);
+SELECT * FROM meditation;
