@@ -1,0 +1,130 @@
+#In this SQL, I'm querying a database with multiple tables in it to quantify statistics about customer and product data.
+
+#1. Which customers are not located in the US? 
+SELECT FirstName, LastName, CustomerId, Country 
+FROM chinook.customers 
+WHERE Country != "USA";
+
+#2. Which customers are from Brazil?
+SELECT * FROM chinook.customers 
+WHERE Country = "Brazil" ;
+
+#3. Show the invoice data from all customers from Brazil.
+SELECT cust.FirstName, cust.LastName, inv.InvoiceId, inv.BillingCountry, inv.InvoiceDate
+FROM chinook.invoices as inv 
+LEFT JOIN chinook.customers as cust 
+on inv.CustomerId = cust.CustomerId 
+WHERE inv.BillingCountry = "Brazil";
+
+#4. Which employees are Sales Support Agents?
+SELECT * FROM chinook.Employees
+WHERE Title = "Sales Support Agent" ;
+
+#5. Create a list of billing countries from the past invoices.
+SELECT DISTINCT BillingCountry FROM chinook.Invoices ;
+
+#6. Which invoices are associates with which Sales Support Agent?
+SELECT emp.LastName, emp.Firstname, inv.InvoiceId
+FROM chinook.Employees emp 
+JOIN chinook.Customers cust ON cust.SupportRepId = emp.EmployeeId
+JOIN chinook.Invoices Inv ON Inv.CustomerId = cust.CustomerId;
+
+#7. Show the Invoice Total, Customer name, Country, and Sales Agent name for all invoices and customers.
+SELECT emp.LastName, emp.Firstname, cust.FirstName, cust.LastName, cust.Country, inv.total
+FROM chinook.employees emp 
+JOIN chinook.Customers cust ON cust.SupportRepId = emp.EmployeeId
+JOIN chinook.Invoices Inv ON Inv.CustomerId = cust.CustomerId;
+
+#8. How many Invoices were there in 2009?
+SELECT COUNT(*)
+FROM chinook.Invoices
+WHERE InvoiceDate BETWEEN '2009-01-01' AND '2009-12-31';
+
+#9. What are the total sales for 2009?
+SELECT SUM(Total)
+FROM chinook.Invoices
+WHERE InvoiceDate BETWEEN '2009-01-01' AND '2009-12-31';
+
+#10. Show the track name with each invoice line ID.
+SELECT t.Name, i.InvoiceLineId
+FROM chinook.Invoice_items i
+JOIN chinook.Tracks t 
+ON i.TrackId = t.TrackId;
+
+#11. Show the track name and artist name  with each invoice line ID.
+SELECT ar.name as Artist, t.Name as Track, i.InvoiceLineId
+FROM chinook.Invoice_items i
+LEFT JOIN chinook.tracks t 
+ON i.TrackID=t.TrackID
+INNER JOIN chinook.albums a
+ON a.AlbumID=t.AlbumID
+LEFT JOIN chinook.artists ar
+ON ar.ArtistID=a.ArtistID;
+
+#12. Show all tracks and include the album name, media type, and genre.
+SELECT t.Name AS 'Track Name', a.Title AS 'Album Title', m.Name AS 'Media Type', g.Name AS 'Genre'
+FROM chinook.tracks t
+JOIN chinook.Albums a 
+on a.AlbumId = t.AlbumId
+JOIN chinook.Media_Types m
+on m.MediaTypeId = t.MediaTypeId
+JOIN chinook.Genres g
+on g.GenreId = t.GenreId;
+
+#13. What are the sales numbers for each Sales Support Agent?
+SELECT emp.FirstName, emp.LastName,
+ROUND(SUM(Inv.Total), 2) as 'Total Sales' 
+FROM chinook.Employees emp
+JOIN chinook.Customers cust 
+ON cust.SupportRepId = emp.EmployeeId
+JOIN chinook.Invoices Inv 
+ON Inv.CustomerId = cust.CustomerId
+WHERE emp.Title = 'Sales Support Agent' 
+GROUP BY emp.FirstName;
+
+#14. Which Sales Support Agent made the most money in sales in 2009?
+SELECT emp.FirstName, emp.LastName,
+ROUND(SUM(Inv.Total), 2) as 'Total Sales' 
+FROM chinook.Employees emp
+JOIN chinook.Customers cust 
+ON cust.SupportRepId = emp.EmployeeId
+JOIN chinook.Invoices Inv 
+ON Inv.CustomerId = cust.CustomerId
+WHERE emp.Title = 'Sales Support Agent' 
+AND Inv.InvoiceDate LIKE '2009%' 
+GROUP BY emp.FirstName
+ORDER BY (round(sum(Inv.Total), 2))  DESC LIMIT 1;
+
+#15. What is the average price per track?
+SELECT AVG(UnitPrice)
+FROM chinook.tracks;
+
+#16. What tracks are over the average amount of time?
+SELECT 
+Name, 
+Milliseconds
+FROM chinook.tracks
+WHERE Milliseconds >(SELECT AVG(Milliseconds)
+FROM chinook.tracks)
+ORDER BY Milliseconds DESC;
+
+#17. Which artists where the sole composers on their own track?
+SELECT
+art.Name AS Artist,
+tra.Name AS Track,
+tra.Composer AS Composer
+FROM chinook.artists art
+JOIN chinook.albums alb
+ON art.Artistid = alb.Artistid
+JOIN chinook.tracks tra
+ON alb.Albumid = tra.Albumid
+WHERE Artist = Composer;
+
+#18. Which employees are over the average age and what is their title? 
+SELECT 
+LastName,
+FirstName,
+Title,
+HireDate
+FROM chinook.employees
+WHERE BirthDate > (SELECT AVG(BirthDate) FROM chinook.employees);
