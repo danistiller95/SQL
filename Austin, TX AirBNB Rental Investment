@@ -1,0 +1,78 @@
+--In this analysis I used AirBNB data from Inside AirBNB to explore the idea of buying a AirBNB property in Austin, TX.
+
+--How many AirBNB rentals are in Austin, TX?
+SELECT 
+COUNT(id) AS rentals_in_Austin
+FROM BIT_DB.AIRBNB_listings;
+
+--What is the average cost per night?
+SELECT 
+AVG(price) AS Average_Price_Per_Night
+FROM BIT_DB.AIRBNB_listings;
+
+-- Are private rooms or entire homes/apartments more popular?
+SELECT
+room_type,
+COUNT(room_type) AS total_room_type_listings
+FROM BIT_DB.AIRBNB_listings
+GROUP BY room_type
+ORDER BY total_room_type_listings DESC;
+
+-- What are the top 5 neighborhoods??
+SELECT 
+neighbourhood,
+COUNT(neighbourhood) AS total_neighbourhood_listings
+FROM BIT_DB.AIRBNB_listings
+GROUP BY neighbourhood
+ORDER BY total_neighbourhood_listings DESC
+LIMIT 5;
+
+-- What is the average minimum stay requirement?
+SELECT 
+AVG(minimum_nights) AS average
+FROM BIT_DB.AIRBNB_listings;
+
+-- What are the average amount of bookings for the next 365 days?
+SELECT
+365 - AVG(availability_365) AS average_bookings
+FROM BIT_DB.AIRBNB_listings;
+
+-- What is the average yearly revenue potential?
+SELECT 
+(365 - AVG(availability_365) ) * AVG(price) AS average_yearly_revenue_potential
+FROM BIT_DB.AIRBNB_listings;
+
+-- How many rentals does each host have?
+SELECT 
+host_id,
+host_name,
+COUNT(host_id) AS num_of_rentals
+FROM BIT_DB.AIRBNB_listings
+GROUP BY host_id
+ORDER BY num_of_rentals DESC;
+
+--Which listings are over the average price per night with less than half a year of availability?
+SELECT
+name,
+availability_365,
+price
+FROM BIT_DB.AIRBNB_listings
+WHERE availability_365 < (SELECT AVG(availability_365) FROM BIT_DB.AIRBNB_listings) 
+AND price > (SELECT AVG(price) FROM BIT_DB.AIRBNB_listings) 
+ORDER BY availability_365 desc;
+
+--Which listings are under the average price per night with more than half a year of availability?
+SELECT
+name,
+availability_365,
+price
+FROM BIT_DB.AIRBNB_listings
+WHERE availability_365 > (SELECT AVG(availability_365) FROM BIT_DB.AIRBNB_listings) 
+AND price < (SELECT AVG(price) FROM BIT_DB.AIRBNB_listings) 
+ORDER BY availability_365 desc;
+
+--Based on the average home price in Austin being $600,000, the estimated yearly mortgage would be $46,265.40. This is well below the average yearly revenue potential 
+determined in this analysis. Factors that were not availabile to analyze in this data are the added costs of property management, cleaning services, and lawn care. 
+These could also affect potential earnings. Another limitation of this anaysis is the availability data. Multiple listings show "0" availability in the next 365 days, 
+but it does not specify if this is due to the listing being booked for that time or unavailable. Based on my analysis, I would look into added costs of buying a AirBNB 
+before making any purchases.
